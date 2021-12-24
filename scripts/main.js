@@ -1,5 +1,5 @@
 const app = document.querySelector("#app");
-const BASE_URL = "https://lol.lo";
+const BASE_URL = "http://localhost:3000";
 let signing = false;
 
 const commands = {
@@ -183,7 +183,7 @@ const signByEmail = async (email) => {
 
 const stats = async () => {
   return axios
-    .get(BASE_URL + "/stats")
+    .get(BASE_URL + "/stat")
     .then((response) => {
       return response.data;
     })
