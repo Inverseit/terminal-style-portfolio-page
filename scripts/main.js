@@ -1,13 +1,12 @@
 const app = document.querySelector("#app");
+const BASE_URL = "https://lol.lo";
 let signing = false;
 
 const commands = {
   about: {
     text: "Who are we and what are we doing?",
     action: () => {
-      createText(
-        "We are some people and we really want a linux lab at CMUQ!"
-      );
+      createText("We are some people and we really want a linux lab at CMUQ!");
     },
   },
   help: {
@@ -30,7 +29,7 @@ const commands = {
     action: async () => {
       createText("Fetching data from the server:");
       const res = await stats();
-      createText(`${res} people have signed the petition`)
+      createText(`${res} people have signed the petition`);
     },
   },
 };
@@ -69,7 +68,7 @@ async function open_terminal() {
 }
 
 function new_line() {
-  if (!signing){
+  if (!signing) {
     const p = document.createElement("p");
     const span1 = document.createElement("span");
     const span2 = document.createElement("span");
@@ -99,12 +98,12 @@ function removeInput() {
 
 async function getInputValue() {
   const value = document.querySelector("input").value;
-  if (signing){
+  if (signing) {
     createText(value);
-    const {isSuccess, message} = await signByEmail(value);
-    if (isSuccess){
+    const { isSuccess, message } = await signByEmail(value);
+    if (isSuccess) {
       trueValue(message);
-    } else{
+    } else {
       falseValue(message);
     }
     signing = false;
@@ -167,10 +166,25 @@ function createCode(code, text) {
 open_terminal();
 
 const signByEmail = async (email) => {
-  console.log(email);
-  return {isSuccess: true, message: `Done, thanks ${email}!`}
-}
+  return axios
+    .get(`${BASE_URL}/sign?email=${email}`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return {isSuccess: false, message: "Server error happened, sorry :("};
+    });
+};
 
 const stats = async () => {
-  return 10;
-}
+  return axios
+    .get(BASE_URL + "/stats")
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return {isSuccess: false, message: "Server error happened, sorry :("};
+    });
+};
