@@ -28,8 +28,12 @@ const commands = {
     text: "See how many people have signed the petition",
     action: async () => {
       createText("Fetching data from the server:");
-      const res = await stats();
-      createText(`${res} people have signed the petition`);
+      const { isSuccess, message } = await stats();
+      if (isSuccess) {
+        trueValue(`${message} people have signed the petition`);
+      } else {
+        falseValue(message);
+      }
     },
   },
 };
@@ -173,7 +177,7 @@ const signByEmail = async (email) => {
     })
     .catch((error) => {
       console.error(error);
-      return {isSuccess: false, message: "Server error happened, sorry :("};
+      return { isSuccess: false, message: "Server error happened, sorry :(" };
     });
 };
 
@@ -185,6 +189,6 @@ const stats = async () => {
     })
     .catch((error) => {
       console.error(error);
-      return {isSuccess: false, message: "Server error happened, sorry :("};
+      return { isSuccess: false, message: "Server error happened, sorry :(" };
     });
 };
