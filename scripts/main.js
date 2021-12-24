@@ -1,17 +1,28 @@
 const app = document.querySelector("#app");
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://178.62.111.137:1202";
 let signing = false;
 
 const commands = {
   about: {
     text: "Who are we and what are we doing?",
-    action: () => {
+    action: async () => {
       createText("We are some people and we really want a linux lab at CMUQ!");
+    },
+  },
+  clear: {
+    text: "Clear screen",
+    action: async () => {
+      document
+        .querySelectorAll("p")
+        .forEach((e) => e.parentNode.removeChild(e));
+      document
+        .querySelectorAll("section")
+        .forEach((e) => e.parentNode.removeChild(e));
     },
   },
   help: {
     text: "See all commands.",
-    action: () => {
+    action: async () => {
       for (const [key, { text }] of Object.entries(commands)) {
         createCode(key, text);
       }
@@ -19,7 +30,7 @@ const commands = {
   },
   sign: {
     text: "Support our initiation - sign the petition by entering your email",
-    action: () => {
+    action: async () => {
       signing = true;
       createText("Please, enter your email:");
     },
@@ -43,10 +54,10 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 app.addEventListener("keypress", async function (event) {
   if (event.key === "Enter") {
     await delay(150);
-    getInputValue();
+    await getInputValue();
 
     removeInput();
-    await delay(150);
+    await delay(100);
     new_line();
   }
 });
@@ -115,12 +126,7 @@ async function getInputValue() {
   }
   if (commands.hasOwnProperty(value)) {
     trueValue(value);
-    commands[value].action();
-  } else if (value === "clear") {
-    document.querySelectorAll("p").forEach((e) => e.parentNode.removeChild(e));
-    document
-      .querySelectorAll("section")
-      .forEach((e) => e.parentNode.removeChild(e));
+    await commands[value].action();
   } else {
     falseValue(value);
     createText(`command not found: ${value}`);
